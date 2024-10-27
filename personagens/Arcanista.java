@@ -4,7 +4,7 @@ package personagens;
 public class Arcanista extends Personagem {
 
     public Arcanista(String nome) {
-        super(nome, 70, 1, 13);  // Inicializa o Arcanista com vida, nível e ataque
+        super(nome, 72, 1, 13);  // Inicializa o Arcanista com vida, nível e ataque
     }
 
     // Implementação do ataque para o Arcanista
