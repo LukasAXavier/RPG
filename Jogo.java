@@ -36,7 +36,7 @@ public class Jogo {
         }
 
         // Criação do inimigo Goblin com narrativa
-        Monstro goblin = new Monstro("Goblin", 30, 5);
+        Monstro goblin = new Monstro("Goblin", 38, 5);
         System.out.println("\nAo iniciar sua jornada, você encontra um " + goblin.getNome() + " ameaçador bloqueando seu caminho!");
 
         // Loop do jogo onde o jogador escolhe ações
