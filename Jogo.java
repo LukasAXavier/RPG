@@ -2,7 +2,7 @@ import java.util.Random;
 import java.util.Scanner;
 import monstros.Monstro;
 import personagens.*;
-// lixo uhumano
+// se leu seu cu e meu
 // Classe principal que controla o jogo e a interação com o jogador
 public class Jogo {
 
