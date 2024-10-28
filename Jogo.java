@@ -2,14 +2,11 @@ import personagens.*;
 import monstros.*;
 import itens.Item;
 import java.util.Scanner;
-import java.util.Random;
 
 public class Jogo {
 
     public static void main(String[] args) {
-        try (Scanner scanner = new Scanner(System.in)) {  // Usa try-with-resources para fechar o Scanner automaticamente
-            // Random random = new Random(); // Remova esta linha se a variável não está sendo utilizada
-
+        try (Scanner scanner = new Scanner(System.in)) {
             Personagem jogador = escolherPersonagem(scanner);
             Item pocao = new Item("Poção de Cura", 20);
 
@@ -33,8 +30,10 @@ public class Jogo {
                         Monstro goblin = new Monstro("Goblin", 25, 8);
 
                         if (contadorMonstros > 0) {
-                            aumentarAtributosMonstro(goblin, contadorMonstros);
+                            goblin.aumentarNivel();
                         }
+
+                        System.out.printf("Você encontrou um %s nível %d!\n", goblin.getNome(), goblin.getNivelMonstro());
 
                         if (iniciarBatalha(jogador, goblin, scanner)) {
                             jogador.subirNivel();
@@ -140,15 +139,5 @@ public class Jogo {
         }
 
         return jogador.getVida() > 0;
-    }
-
-    public static void aumentarAtributosMonstro(Monstro monstro, int contador) {
-        double aumento = Math.pow(1.07, contador);  // Aumenta 7% a cada encontro adicional
-        monstro.setVida((int)(monstro.getVida() * aumento));
-        monstro.setAtaque((int)(monstro.getAtaque() * aumento));
-        monstro.setDefesa((int)(monstro.getDefesa() * aumento));
-
-        System.out.printf("\nO %s está mais forte! Vida: %.0f, Ataque: %.0f, Defesa: %.0f\n",
-                monstro.getNome(), (double) monstro.getVida(), (double) monstro.getAtaque(), (double) monstro.getDefesa());
     }
 }

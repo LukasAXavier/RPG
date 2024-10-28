@@ -20,17 +20,17 @@ public abstract class Personagem {
 
     public void defender() {
         System.out.println("\n" + nome + " assume uma postura defensiva, reduzindo o dano recebido.");
-        defesa += 5;
+        defesa += 5;  // Aumenta a defesa temporariamente
     }
 
     public void receberDano(int dano) {
         int danoFinal = Math.max(dano - defesa, 0);
-        this.vida -= danoFinal;
+        this.vida = Math.max(this.vida - danoFinal, 0);  // Garante que a vida não fique negativa
         System.out.println(nome + " foi atingido e perdeu " + danoFinal + " HP e agora está com " + vida + " HP.");
         if (this.vida <= 0) {
             System.out.println(nome + " foi derrotado.");
         }
-        defesa = 0;
+        defesa = 0;  // Reseta a defesa após cada turno
     }
 
     public void exibirStatus() {
