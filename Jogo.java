@@ -7,70 +7,70 @@ import java.util.Random;
 public class Jogo {
 
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        Random random = new Random();
-        Personagem jogador = escolherPersonagem(scanner);
-        Item pocao = new Item("Poção de Cura", 20);
+        try (Scanner scanner = new Scanner(System.in)) {  // Usa try-with-resources para fechar o Scanner automaticamente
+            // Random random = new Random(); // Remova esta linha se a variável não está sendo utilizada
 
-        System.out.println("\nVocê começa sua aventura!");
+            Personagem jogador = escolherPersonagem(scanner);
+            Item pocao = new Item("Poção de Cura", 20);
 
-        boolean enfrentouBoss = false;
-        int contadorMonstros = 0;  // Inicializa em zero, só aumenta após o primeiro combate
+            System.out.println("\nVocê começa sua aventura!");
 
-        while (jogador.getVida() > 0 && !enfrentouBoss) {
-            System.out.println("\n******************************");
-            System.out.println("Escolha uma direção para explorar:");
-            System.out.println("Esquerda");
-            System.out.println("Direita");
-            System.out.println("Frente");
-            System.out.println("******************************");
-            String direcao = scanner.nextLine().toLowerCase();
+            boolean enfrentouBoss = false;
+            int contadorMonstros = 0;
 
-            switch (direcao) {
-                case "esquerda":
-                    System.out.println("\nVocê encontra um monstro!");
-                    Monstro goblin = new Monstro("Goblin", 25, 8);
-                    
-                    if (contadorMonstros > 0) {
-                        aumentarAtributosMonstro(goblin, contadorMonstros);
-                    }
-                    
-                    if (iniciarBatalha(jogador, goblin)) {
-                        jogador.subirNivel();
-                        contadorMonstros++;  // Incrementa após o primeiro combate
-                    }
-                    break;
-                case "direita":
-                    System.out.println("\nVocê encontra uma poção de cura!");
-                    pocao.usar(jogador);
-                    break;
-                case "frente":
-                    System.out.println("\nVocê sente uma presença ameaçadora à frente. Parece que há um Boss nesta direção.");
-                    System.out.println("Deseja enfrentar o Boss ou fugir? (enfrentar/fugir)");
-                    String escolha = scanner.nextLine().toLowerCase();
+            while (jogador.getVida() > 0 && !enfrentouBoss) {
+                System.out.println("\n******************************");
+                System.out.println("Escolha uma direção para explorar:");
+                System.out.println("Esquerda");
+                System.out.println("Direita");
+                System.out.println("Frente");
+                System.out.println("******************************");
+                String direcao = scanner.nextLine().toLowerCase();
 
-                    if (escolha.equals("enfrentar")) {
-                        enfrentouBoss = iniciarBatalha(jogador, new Boss());
-                        if (enfrentouBoss) {
-                            jogador.subirNivel();
+                switch (direcao) {
+                    case "esquerda":
+                        System.out.println("\nVocê encontra um monstro!");
+                        Monstro goblin = new Monstro("Goblin", 25, 8);
+
+                        if (contadorMonstros > 0) {
+                            aumentarAtributosMonstro(goblin, contadorMonstros);
                         }
-                    } else {
-                        System.out.println("\nVocê escolheu fugir e evitar o confronto com o Boss por enquanto.");
-                    }
-                    break;
-                default:
-                    System.out.println("\nDireção inválida. Tente novamente.");
-                    break;
+
+                        if (iniciarBatalha(jogador, goblin, scanner)) {
+                            jogador.subirNivel();
+                            contadorMonstros++;
+                        }
+                        break;
+                    case "direita":
+                        System.out.println("\nVocê encontra uma poção de cura!");
+                        pocao.usar(jogador);
+                        break;
+                    case "frente":
+                        System.out.println("\nVocê sente uma presença ameaçadora à frente. Parece que há um Boss nesta direção.");
+                        System.out.println("Deseja enfrentar o Boss ou fugir? (enfrentar/fugir)");
+                        String escolha = scanner.nextLine().toLowerCase();
+
+                        if (escolha.equals("enfrentar")) {
+                            enfrentouBoss = iniciarBatalha(jogador, new Boss(), scanner);
+                            if (enfrentouBoss) {
+                                jogador.subirNivel();
+                            }
+                        } else {
+                            System.out.println("\nVocê escolheu fugir e evitar o confronto com o Boss por enquanto.");
+                        }
+                        break;
+                    default:
+                        System.out.println("\nDireção inválida. Tente novamente.");
+                        break;
+                }
+            }
+
+            if (jogador.getVida() <= 0) {
+                System.out.println("\nVocê foi derrotado... Fim de jogo.");
+            } else if (enfrentouBoss) {
+                System.out.println("\nParabéns! Você completou sua aventura e derrotou o Boss!");
             }
         }
-
-        if (jogador.getVida() <= 0) {
-            System.out.println("\nVocê foi derrotado... Fim de jogo.");
-        } else if (enfrentouBoss) {
-            System.out.println("\nParabéns! Você completou sua aventura e derrotou o Boss!");
-        }
-
-        scanner.close();
     }
 
     public static Personagem escolherPersonagem(Scanner scanner) {
@@ -96,9 +96,8 @@ public class Jogo {
         }
     }
 
-    public static boolean iniciarBatalha(Personagem jogador, Personagem inimigo) {
+    public static boolean iniciarBatalha(Personagem jogador, Personagem inimigo, Scanner scanner) {
         System.out.println("\nInício da batalha com " + inimigo.getNome() + "!");
-        Scanner scanner = new Scanner(System.in);
 
         while (jogador.getVida() > 0 && inimigo.getVida() > 0) {
             System.out.println("\n******************************");
