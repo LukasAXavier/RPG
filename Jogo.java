@@ -2,7 +2,7 @@ import java.util.Random;
 import java.util.Scanner;
 import monstros.Monstro;
 import personagens.*;
-// negger negger
+// negger negger neggers
 // Classe principal que controla o jogo e a interação com o jogador
 public class Jogo {
 
