@@ -4,19 +4,22 @@ import personagens.Personagem;
 
 public class Item {
     private String nome;
-    private int cura;
+    private int valor;
+    private String tipo;
 
-    public Item(String nome, int cura) {
+    public Item(String nome, int valor, String tipo) {
         this.nome = nome;
-        this.cura = cura;
+        this.valor = valor;
+        this.tipo = tipo;
     }
 
-    public void usar(Personagem personagem) {
-        System.out.println(personagem.getNome() + " usa " + nome + " e recupera " + cura + " pontos de vida.");
-        personagem.receberDano(-cura);  // cura o personagem
-    }
-
-    public String getNome() {
-        return nome;
+    public void usar(Personagem jogador) {
+        if (tipo.equals("cura")) {
+            jogador.setVida(jogador.getVida() + valor);
+            System.out.println(jogador.getNome() + " recuperou " + valor + " de HP e agora tem " + jogador.getVida() + " HP.");
+        } else if (tipo.equals("xp")) {
+            jogador.subirNivel();
+            System.out.println(jogador.getNome() + " usou a " + nome + " e aumentou seu nível!");
+        }
     }
 }
