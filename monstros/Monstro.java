@@ -2,18 +2,21 @@ package monstros;
 
 import personagens.Personagem;
 
-// Classe que representa monstros inimigos no jogo
 public class Monstro extends Personagem {
 
-    // Construtor que inicializa o monstro com vida e ataque
     public Monstro(String nome, int vida, int ataque) {
-        super(nome, vida, 1, ataque);  // Nível fixo como 1
+        super(nome, vida, ataque, 2, 1);  // Monstros com 2 de defesa inicial
     }
 
-    // Implementação do ataque para o monstro
     @Override
     public void atacar(Personagem alvo) {
-        System.out.println(nome + " ataca ferozmente " + alvo.getNome());
+        System.out.println(getNome() + " ataca ferozmente " + alvo.getNome() + "!");
         alvo.receberDano(ataque);
+    }
+
+    @Override
+    public void usarHabilidade(Personagem alvo) {
+        // Monstros normais não têm habilidades especiais, então este método não faz nada.
+        System.out.println(getNome() + " tenta usar uma habilidade, mas falha.");
     }
 }

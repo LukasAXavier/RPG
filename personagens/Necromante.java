@@ -1,21 +1,21 @@
 package personagens;
 
-import habilidades.InvocarEsqueleto;
-
 public class Necromante extends Personagem {
 
-    public Necromante(String nome) {
-        super(nome, 52, 1, 12);
+    public Necromante() {
+        super("Necromante", 42, 9, 6, 1);
     }
 
     @Override
     public void atacar(Personagem alvo) {
-        System.out.println(nome + " usa magia sombria para atacar " + alvo.getNome());
+        System.out.println("\n" + getNome() + " conjura uma maldição em " + alvo.getNome() + "!");
         alvo.receberDano(ataque);
     }
 
-    public void invocarEsqueleto(Personagem alvo) {
-        InvocarEsqueleto habilidade = new InvocarEsqueleto();
-        habilidade.usar(this, alvo);  // Usa a habilidade no alvo
+    @Override
+    public void usarHabilidade(Personagem alvo) {
+        int danoHabilidade = ataque * 2;
+        System.out.println("\n" + getNome() + " invoca um espírito sombrio para atacar " + alvo.getNome() + ", causando " + danoHabilidade + " de dano!");
+        alvo.receberDano(danoHabilidade);
     }
 }

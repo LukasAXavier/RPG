@@ -1,112 +1,155 @@
-import java.util.Random;
-import java.util.Scanner;
-import monstros.Monstro;
 import personagens.*;
-// Classe principal que controla o jogo e a interação com o jogador
+import monstros.*;
+import itens.Item;
+import java.util.Scanner;
+import java.util.Random;
+
 public class Jogo {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         Random random = new Random();
-        boolean pocaoDisponivel = false;  // Controla se o jogador encontrou uma poção
+        Personagem jogador = escolherPersonagem(scanner);
+        Item pocao = new Item("Poção de Cura", 20);
 
-        // Introdução ao jogo com uma narrativa
-        System.out.println("Bem-vindo ao RPG de Texto inspirado no Diablo!");
-        System.out.println("Você é um aventureiro em uma terra amaldiçoada, enfrentando monstros sombrios para salvar seu reino.");
-        System.out.println("Escolha seu herói para iniciar sua jornada.");
+        System.out.println("\nVocê começa sua aventura!");
 
-        // Escolha de personagem com narrativa explicativa
-        System.out.println("\nEscolha seu personagem:");
-        System.out.println("1 - Necromante: Um mestre das artes sombrias que invoca mortos para lutar.");
-        System.out.println("2 - Arcanista: Um mago poderoso que controla os elementos.");
-        System.out.println("3 - Caçador de Demônios: Um guerreiro ágil com habilidades de longo alcance.");
+        boolean enfrentouBoss = false;
+        int contadorMonstros = 0;  // Inicializa em zero, só aumenta após o primeiro combate
 
-        // Leitura da escolha do jogador e criação do personagem
-        int escolha = scanner.nextInt();
-        scanner.nextLine();
+        while (jogador.getVida() > 0 && !enfrentouBoss) {
+            System.out.println("\n******************************");
+            System.out.println("Escolha uma direção para explorar:");
+            System.out.println("Esquerda");
+            System.out.println("Direita");
+            System.out.println("Frente");
+            System.out.println("******************************");
+            String direcao = scanner.nextLine().toLowerCase();
 
-        // Variável para armazenar o personagem do jogador
-        Personagem jogador;
-        switch (escolha) {
-            case 1 : jogador = new Necromante("Malthael");
-            case 2 : jogador = new Arcanista("Tyrael");
-            case 3 : jogador = new CacadorDeDemonios("Valla");
-            default : jogador = new Necromante("Malthael");
-        }
-
-        // Criação do inimigo Goblin com narrativa
-        Monstro goblin = new Monstro("Goblin", 38, 5);
-        System.out.println("\nAo iniciar sua jornada, você encontra um " + goblin.getNome() + " ameaçador bloqueando seu caminho!");
-
-        // Loop do jogo onde o jogador escolhe ações
-        while (jogador.getVida() > 0 && goblin.getVida() > 0) {
-            System.out.println("\nO que você deseja fazer?");
-            System.out.println("Escolha uma ação: atacar, habilidade, status, explorar, usar item, sair");
-
-            String acao = scanner.nextLine().toLowerCase();
-
-            switch (acao) {
-                case "atacar" : jogador.atacar(goblin);
-                case "habilidade" : {
-                    if (jogador instanceof Necromante) {
-                        ((Necromante) jogador).invocarEsqueleto(goblin);
-                    } else if (jogador instanceof Arcanista) {
-                        ((Arcanista) jogador).feitiçoPoderoso(goblin);
-                    } else if (jogador instanceof CacadorDeDemonios) {
-                        ((CacadorDeDemonios) jogador).flechaExplosiva(goblin);
+            switch (direcao) {
+                case "esquerda":
+                    System.out.println("\nVocê encontra um monstro!");
+                    Monstro goblin = new Monstro("Goblin", 25, 8);
+                    
+                    if (contadorMonstros > 0) {
+                        aumentarAtributosMonstro(goblin, contadorMonstros);
                     }
-                }
-                case "status" : {
-                    jogador.exibirStatus();
-                    goblin.exibirStatus();
-                }
-                case "explorar" : {
-                    System.out.println("\nVocê explora a área ao redor...");
+                    
+                    if (iniciarBatalha(jogador, goblin)) {
+                        jogador.subirNivel();
+                        contadorMonstros++;  // Incrementa após o primeiro combate
+                    }
+                    break;
+                case "direita":
+                    System.out.println("\nVocê encontra uma poção de cura!");
+                    pocao.usar(jogador);
+                    break;
+                case "frente":
+                    System.out.println("\nVocê sente uma presença ameaçadora à frente. Parece que há um Boss nesta direção.");
+                    System.out.println("Deseja enfrentar o Boss ou fugir? (enfrentar/fugir)");
+                    String escolha = scanner.nextLine().toLowerCase();
 
-                    if (random.nextInt(100) < 50) {  // 50% de chance de encontrar uma poção
-                        System.out.println("Você encontrou uma poção de cura!");
-                        pocaoDisponivel = true;
+                    if (escolha.equals("enfrentar")) {
+                        enfrentouBoss = iniciarBatalha(jogador, new Boss());
+                        if (enfrentouBoss) {
+                            jogador.subirNivel();
+                        }
                     } else {
-                        System.out.println("Não encontrou nada útil.");
+                        System.out.println("\nVocê escolheu fugir e evitar o confronto com o Boss por enquanto.");
                     }
-
-                    // Chance de evitar o ataque do Goblin após explorar
-                    if (random.nextInt(100) < 50) {  // 50% de chance de não ser atacado
-                        System.out.println("Você foi rápido e conseguiu evitar o ataque do Goblin!");
-                    } else {
-                        System.out.println("O Goblin aproveita sua distração e ataca!");
-                        goblin.atacar(jogador);
-                    }
-                }
-                case "usar item" : {
-                    if (pocaoDisponivel) {
-                        System.out.println("Você usa a poção e recupera 20 pontos de vida.");
-                        jogador.receberDano(-20);  // Cura 20 pontos de vida
-                        pocaoDisponivel = false;   // A poção é usada
-                    } else {
-                        System.out.println("Você não tem itens para usar.");
-                    }
-                }
-                case "sair" : {
-                    System.out.println("Você decide abandonar a jornada. O reino permanece em perigo.");
-                    return;
-                }
-                default : System.out.println("Ação inválida. Tente novamente.");
-            }
-
-            // Caso o jogador tenha escolhido atacar ou usar habilidade, o Goblin contra-ataca
-            if (goblin.getVida() > 0 && !acao.equals("explorar")) {
-                goblin.atacar(jogador);
+                    break;
+                default:
+                    System.out.println("\nDireção inválida. Tente novamente.");
+                    break;
             }
         }
 
-        // Resultado final com narrativa
         if (jogador.getVida() <= 0) {
-            System.out.println("\nVocê foi derrotado nas sombras... O reino chora sua perda.");
-        } else if (goblin.getVida() <= 0) {
-            System.out.println("\nParabéns! Você derrotou o " + goblin.getNome() + " e deu um passo à frente em sua jornada para salvar o reino!");
+            System.out.println("\nVocê foi derrotado... Fim de jogo.");
+        } else if (enfrentouBoss) {
+            System.out.println("\nParabéns! Você completou sua aventura e derrotou o Boss!");
         }
 
         scanner.close();
+    }
+
+    public static Personagem escolherPersonagem(Scanner scanner) {
+        System.out.println("******************************");
+        System.out.println("Escolha seu personagem:");
+        System.out.println("1 - Arcanista");
+        System.out.println("2 - Caçador de Demônios");
+        System.out.println("3 - Necromante");
+        System.out.println("******************************");
+        int escolha = scanner.nextInt();
+        scanner.nextLine();
+
+        switch (escolha) {
+            case 1:
+                return new Arcanista();
+            case 2:
+                return new CacadorDeDemonios();
+            case 3:
+                return new Necromante();
+            default:
+                System.out.println("\nEscolha inválida! Você será o Arcanista por padrão.");
+                return new Arcanista();
+        }
+    }
+
+    public static boolean iniciarBatalha(Personagem jogador, Personagem inimigo) {
+        System.out.println("\nInício da batalha com " + inimigo.getNome() + "!");
+        Scanner scanner = new Scanner(System.in);
+
+        while (jogador.getVida() > 0 && inimigo.getVida() > 0) {
+            System.out.println("\n******************************");
+            System.out.println("Escolha sua ação:");
+            System.out.println("Atacar");
+            System.out.println("Defender");
+            System.out.println("Usar Habilidade");
+            System.out.println("Status");
+            System.out.println("******************************");
+            String acao = scanner.nextLine().toLowerCase();
+
+            switch (acao) {
+                case "atacar":
+                    jogador.atacar(inimigo);
+                    if (inimigo.getVida() > 0) {
+                        System.out.println("\n" + inimigo.getNome() + " ainda tem " + inimigo.getVida() + " HP.");
+                    }
+                    break;
+                case "defender":
+                    jogador.defender();
+                    break;
+                case "usar habilidade":
+                    jogador.usarHabilidade(inimigo);
+                    if (inimigo.getVida() > 0) {
+                        System.out.println("\n" + inimigo.getNome() + " ainda tem " + inimigo.getVida() + " HP.");
+                    }
+                    break;
+                case "status":
+                    jogador.exibirStatus();
+                    inimigo.exibirStatus();
+                    continue;
+                default:
+                    System.out.println("\nAção inválida.");
+                    break;
+            }
+
+            if (inimigo.getVida() > 0 && !acao.equals("status")) {
+                inimigo.atacar(jogador);
+            }
+        }
+
+        return jogador.getVida() > 0;
+    }
+
+    public static void aumentarAtributosMonstro(Monstro monstro, int contador) {
+        double aumento = Math.pow(1.07, contador);  // Aumenta 7% a cada encontro adicional
+        monstro.setVida((int)(monstro.getVida() * aumento));
+        monstro.setAtaque((int)(monstro.getAtaque() * aumento));
+        monstro.setDefesa((int)(monstro.getDefesa() * aumento));
+
+        System.out.printf("\nO %s está mais forte! Vida: %.0f, Ataque: %.0f, Defesa: %.0f\n",
+                monstro.getNome(), (double) monstro.getVida(), (double) monstro.getAtaque(), (double) monstro.getDefesa());
     }
 }

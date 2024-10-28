@@ -1,43 +1,75 @@
 package personagens;
 
-// Classe abstrata que define atributos e métodos básicos para qualquer personagem
 public abstract class Personagem {
-    protected String nome;  // Nome do personagem
-    protected int vida;     // Quantidade de vida do personagem
-    protected int nivel;    // Nível do personagem
-    protected int ataque;   // Força de ataque do personagem
+    protected String nome;
+    protected int vida;
+    protected int ataque;
+    protected int defesa;
+    protected int nivel;
 
-    // Construtor para inicializar os atributos do personagem
-    public Personagem(String nome, int vida, int nivel, int ataque) {
+    public Personagem(String nome, int vida, int ataque, int defesa, int nivel) {
         this.nome = nome;
         this.vida = vida;
-        this.nivel = nivel;
         this.ataque = ataque;
+        this.defesa = defesa;
+        this.nivel = nivel;
     }
 
-    // Método abstrato de ataque, a ser implementado pelas subclasses
     public abstract void atacar(Personagem alvo);
+    public abstract void usarHabilidade(Personagem alvo);
 
-    // Exibe o status atual do personagem
-    public void exibirStatus() {
-        System.out.println(nome + " - Vida: " + vida + ", Nível: " + nivel);
+    public void defender() {
+        System.out.println("\n" + nome + " assume uma postura defensiva, reduzindo o dano recebido.");
+        defesa += 5;
     }
 
-    // Método para aplicar dano ao personagem
     public void receberDano(int dano) {
-        this.vida -= dano;
+        int danoFinal = Math.max(dano - defesa, 0);
+        this.vida -= danoFinal;
+        System.out.println(nome + " foi atingido e perdeu " + danoFinal + " HP e agora está com " + vida + " HP.");
         if (this.vida <= 0) {
-            System.out.println(nome + " foi derrotado!");
+            System.out.println(nome + " foi derrotado.");
         }
+        defesa = 0;
     }
 
-    // Getter para o nome do personagem
+    public void exibirStatus() {
+        System.out.println(nome + " - Vida: " + vida + ", Ataque: " + ataque + ", Defesa: " + defesa + ", Nível: " + nivel);
+    }
+
+    public int getVida() {
+        return vida;
+    }
+
+    public int getAtaque() {
+        return ataque;
+    }
+
+    public int getDefesa() {
+        return defesa;
+    }
+
     public String getNome() {
         return nome;
     }
 
-    // Getter para a vida do personagem
-    public int getVida() {
-        return vida;
+    public void setVida(int vida) {
+        this.vida = vida;
+    }
+
+    public void setAtaque(int ataque) {
+        this.ataque = ataque;
+    }
+
+    public void setDefesa(int defesa) {
+        this.defesa = defesa;
+    }
+
+    public void subirNivel() {
+        nivel++;
+        vida *= 2;
+        ataque *= 2;
+        defesa *= 2;
+        System.out.println("\n" + nome + " subiu para o nível " + nivel + "! Vida, ataque e defesa foram dobrados.");
     }
 }
