@@ -117,13 +117,7 @@ public class Jogo {
         }
     }
 
-    /**
-     * Método que inicia uma batalha entre o jogador e um inimigo.
-     * @param jogador O personagem do jogador
-     * @param inimigo O inimigo (pode ser Monstro ou Boss)
-     * @param scanner Scanner para capturar entradas do jogador
-     * @return true se o jogador vencer, false se perder
-     */
+
     public static boolean iniciarBatalha(Personagem jogador, Personagem inimigo, Scanner scanner) {
         System.out.println("\nInício da batalha com " + inimigo.getNome() + "!");
 
