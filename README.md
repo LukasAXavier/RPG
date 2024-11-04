@@ -10,3 +10,4 @@ Lukas de Andrade Xavier
 Vitor Orati Sena
 
 (Dois dos integrantes do grupo não conseguiram fazer commits, não sei por qual razão, mas apenas eu e mais um integrante conseguimos editar o repositório e os outros dois so conseguem ler)
+.
